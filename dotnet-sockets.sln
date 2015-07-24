@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotnet-sockets", "dotnet-sockets\dotnet-sockets.csproj", "{B37D2876-3FC6-40A3-8F23-51AB4EBFE02D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tests", "tests\tests.csproj", "{536467D5-D632-4DA1-B175-E229592407A8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{0E3FB8D6-0841-44D7-9CC2-FE99BF47DC6D}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotnet-sockets-server-cli", "dotnet-sockets-server-cli\dotnet-sockets-server-cli.csproj", "{FBE50E1C-95ED-4A10-80DE-C461BB805E4E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotnet-sockets-client-cli", "dotnet-sockets-client-cli\dotnet-sockets-client-cli.csproj", "{48035648-0B58-41E4-BBC0-0E1663F44372}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B37D2876-3FC6-40A3-8F23-51AB4EBFE02D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B37D2876-3FC6-40A3-8F23-51AB4EBFE02D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B37D2876-3FC6-40A3-8F23-51AB4EBFE02D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B37D2876-3FC6-40A3-8F23-51AB4EBFE02D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{536467D5-D632-4DA1-B175-E229592407A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{536467D5-D632-4DA1-B175-E229592407A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{536467D5-D632-4DA1-B175-E229592407A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{536467D5-D632-4DA1-B175-E229592407A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBE50E1C-95ED-4A10-80DE-C461BB805E4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBE50E1C-95ED-4A10-80DE-C461BB805E4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBE50E1C-95ED-4A10-80DE-C461BB805E4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBE50E1C-95ED-4A10-80DE-C461BB805E4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48035648-0B58-41E4-BBC0-0E1663F44372}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48035648-0B58-41E4-BBC0-0E1663F44372}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48035648-0B58-41E4-BBC0-0E1663F44372}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48035648-0B58-41E4-BBC0-0E1663F44372}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
