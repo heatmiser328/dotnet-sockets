@@ -26,11 +26,11 @@ namespace dotnet_sockets
         public AsyncSocketServer(int port) : this(port, new log.ConsoleLog()) {}
         public AsyncSocketServer() : this(-1) {}
 
-        public event EventHandler<ISocketClient> Connected;
-        public event EventHandler<ISocketClient> Disconnected;
-        public event EventHandler<Exception> Error;
-        public event EventHandler<int> Sent;
-        public event EventHandler<SocketDataArgs> Received;
+        public event EventHandler<EventArgs<ISocketClient>> Connected;
+        public event EventHandler<EventArgs<ISocketClient>> Disconnected;
+        public event EventHandler<EventArgs<Exception>> Error;
+        public event EventHandler<EventArgs<int>> Sent;
+        public event EventHandler<SocketDataArgs> ReceivedData;
 
         public IEnumerable<ISocketClient> Clients { get { return _clients.ToArray(); } }
 
@@ -235,15 +235,15 @@ namespace dotnet_sockets
             };
             client.Error += (sender, err) =>
             {
-                RaiseError(err);
+                RaiseError(err.Value);
             };
-            client.Received += (sender, args) =>
+            client.ReceivedData += (sender, args) =>
             {
-                RaiseReceived(client, args.Data, args.Size);
+                RaiseReceivedData(client, args.Data, args.Size);
             };
             client.Sent += (sender, sent) =>
             {
-                RaiseSent(sent);
+                RaiseSent(sent.Value);
             };
 
             Task.Factory.StartNew(() => {
@@ -258,27 +258,27 @@ namespace dotnet_sockets
         void RaiseConnected(ISocketClient client)
         {
             if (Connected != null)
-                Connected(this, client);
+                Connected(this, new EventArgs<ISocketClient>(client));
         }
         void RaiseDisconnected(ISocketClient client)
         {
             if (Disconnected != null)
-                Disconnected(this, client);
+                Disconnected(this, new EventArgs<ISocketClient>(client));
         }        
         void RaiseError(Exception ex)
         {
             if (Error != null)
-                Error(this, ex);
+                Error(this, new EventArgs<Exception>(ex));
         }
         void RaiseSent(int length)
         {
             if (Sent != null)
-                Sent(this, length);
+                Sent(this, new EventArgs<int>(length));
         }
-        void RaiseReceived(ISocketClient client, byte[] data, int length)
+        void RaiseReceivedData(ISocketClient client, byte[] data, int length)
         {
-            if (Received != null)
-                Received(this, new SocketDataArgs(client, data, length));
+            if (ReceivedData != null)
+                ReceivedData(this, new SocketDataArgs(client, data, length));
         }
         #endregion
     }

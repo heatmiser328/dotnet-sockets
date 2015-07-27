@@ -32,12 +32,12 @@ namespace dotnet_sockets
         public AsyncSocketClient(string address, int port) : this(address, port, new log.ConsoleLog()) {}
         public AsyncSocketClient() : this(null, -1) {}
 
-        public event EventHandler<bool> Connected;
-        public event EventHandler<bool> Reconnected;
-        public event EventHandler<bool> Disconnected;
-        public event EventHandler<Exception> Error;
-        public event EventHandler<int> Sent;
-        public event EventHandler<SocketDataArgs> Received;
+        public event EventHandler<EventArgs<bool>> Connected;
+        public event EventHandler<EventArgs<bool>> Reconnected;
+        public event EventHandler<EventArgs<bool>> Disconnected;
+        public event EventHandler<EventArgs<Exception>> Error;
+        public event EventHandler<EventArgs<int>> Sent;
+        public event EventHandler<SocketDataArgs> ReceivedData;
 
         public bool IsConnected { get {return _socket != null ? _socket.Connected : false; }}
 
@@ -258,7 +258,7 @@ namespace dotnet_sockets
                                 if (data.Length > 0)
                                 {
                                     _log.Debug("AsyncSocketClient: Received message {0}", data.Length);
-                                    RaiseReceived(data, data.Length);
+                                    RaiseReceivedData(data, data.Length);
                                 }
                             }                                
                             else
@@ -291,32 +291,32 @@ namespace dotnet_sockets
         void RaiseConnected()
         {
             if (Connected != null)
-                Connected(this, true);
+                Connected(this, new EventArgs<bool>(true));
         }
         void RaiseReconnected()
         {
             if (Reconnected != null)
-                Reconnected(this, true);
+                Reconnected(this, new EventArgs<bool>(true));
         }
         void RaiseDisconnected()
         {
             if (Disconnected != null)
-                Disconnected(this, false);
+                Disconnected(this, new EventArgs<bool>(false));
         }        
         void RaiseError(Exception ex)
         {
             if (Error != null)
-                Error(this, ex);
+                Error(this, new EventArgs<Exception>(ex));
         }
         void RaiseSent(int length)
         {
             if (Sent != null)
-                Sent(this, length);
+                Sent(this, new EventArgs<int>(length));
         }
-        void RaiseReceived(byte[] data, int length)
+        void RaiseReceivedData(byte[] data, int length)
         {
-            if (Received != null)
-                Received(this, new SocketDataArgs(this, data, length));
+            if (ReceivedData != null)
+                ReceivedData(this, new SocketDataArgs(this, data, length));
         }
         #endregion
     }

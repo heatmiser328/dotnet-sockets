@@ -8,12 +8,12 @@ namespace dotnet_sockets
 {
     public interface ISocketClient
     {
-		event EventHandler<bool> Connected;
-		event EventHandler<bool> Reconnected;
-		event EventHandler<bool> Disconnected;
-		event EventHandler<Exception> Error;
-		event EventHandler<int> Sent;
-        event EventHandler<SocketDataArgs> Received;
+		event EventHandler<EventArgs<bool>> Connected;
+		event EventHandler<EventArgs<bool>> Reconnected;
+        event EventHandler<EventArgs<bool>> Disconnected;
+		event EventHandler<EventArgs<Exception>> Error;
+		event EventHandler<EventArgs<int>> Sent;
+        event EventHandler<SocketDataArgs> ReceivedData;
 
         bool IsConnected { get; }
 

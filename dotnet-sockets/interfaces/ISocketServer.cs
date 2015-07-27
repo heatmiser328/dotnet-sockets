@@ -9,11 +9,11 @@ namespace dotnet_sockets
 {
     public interface ISocketServer
     {
-		event EventHandler<ISocketClient> Connected;
-        event EventHandler<ISocketClient> Disconnected;
-		event EventHandler<Exception> Error;
-        event EventHandler<int> Sent;
-        event EventHandler<SocketDataArgs> Received;
+		event EventHandler<EventArgs<ISocketClient>> Connected;
+        event EventHandler<EventArgs<ISocketClient>> Disconnected;
+		event EventHandler<EventArgs<Exception>> Error;
+        event EventHandler<EventArgs<int>> Sent;
+        event EventHandler<SocketDataArgs> ReceivedData;
 
         IEnumerable<ISocketClient> Clients { get; }
 

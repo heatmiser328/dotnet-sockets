@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncSocketServer.cs" />
+    <Compile Include="events\GenericEventArgs.cs" />
     <Compile Include="events\SocketDataArgs.cs" />
     <Compile Include="interfaces\ILog.cs" />
     <Compile Include="interfaces\ISocketServer.cs" />

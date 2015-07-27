@@ -17,19 +17,9 @@ namespace dotnet_sockets.log
         #region ILog Members
         public string Level { get; set; }
 
-        public void Trace(string msg)
-        {
-            Write("TRACE", msg);
-        }
-
         public void Trace(string msg, params object[] args)
         {
             Write("TRACE", msg, args);
-        }
-
-        public void Debug(string msg)
-        {
-            Write("DEBUG", msg);
         }
 
         public void Debug(string msg, params object[] args)
@@ -37,37 +27,14 @@ namespace dotnet_sockets.log
             Write("DEBUG", msg, args);
         }
 
-        public void Info(string msg)
-        {
-            Write("INFO", msg);
-        }
-
         public void Info(string msg, params object[] args)
         {
             Write("INFO", msg, args);
         }
 
-        public void Warn(string msg)
-        {
-            Write("WARN", msg);
-        }
-
         public void Warn(string msg, params object[] args)
         {
             Write("WARN", msg, args);
-        }
-
-        public void Error(string msg)
-        {
-            Write("ERROR", msg);
-        }
-
-        public void Error(string msg, Exception ex)
-        {
-            string em = ExceptionMessage(ex);
-            if (!string.IsNullOrEmpty(em))
-                msg += System.Environment.NewLine + em;
-            Write("ERROR", msg);
         }
 
         public void Error(string msg, params object[] args)
@@ -81,12 +48,6 @@ namespace dotnet_sockets.log
             if (!string.IsNullOrEmpty(em))
                 msg += System.Environment.NewLine + em;
             Write("ERROR", msg, args);
-        }
-
-
-        public void Fatal(string msg)
-        {
-            Write("FATAL", msg);
         }
 
         public void Fatal(string msg, params object[] args)
@@ -115,14 +76,8 @@ namespace dotnet_sockets.log
 
         void Write(string level, string msg, params object[] args)
         {
-            if (DisplayLevel(level))
-                Write(level, string.Format(msg, args));
-        }
-
-        void Write(string level, string msg)
-        {
-            if (DisplayLevel(level))
-                Console.Out.WriteLine("{0}: {1,-5}: {2}", DateTime.Now, level, msg);
+            if (DisplayLevel(level))            
+                Console.Out.WriteLine("{0}: {1,-5}: {2}", DateTime.Now, level, args != null ? string.Format(msg, args) : msg);                
         }
     }
 }
