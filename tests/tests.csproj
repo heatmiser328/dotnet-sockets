@@ -57,7 +57,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="mocks\MockLog.cs" />
     <Compile Include="mocks\MockTcpServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="client\AsyncSocketClientTest.cs" />

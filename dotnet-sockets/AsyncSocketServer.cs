@@ -12,18 +12,15 @@ namespace dotnet_sockets
     // http://codereview.stackexchange.com/questions/31143/performant-c-socket-server
     public class AsyncSocketServer : ISocketServer
     {
-        int _port;
-        ILog _log;
+        int _port;        
         Socket _socket;
 		const int cBackLog = 100;
         IList<ISocketClient> _clients = new List<ISocketClient>();                
 
-        public AsyncSocketServer(int port, ILog log)
+        public AsyncSocketServer(int port)
         {
-            _port = port;
-            _log = log;            
-        }
-        public AsyncSocketServer(int port) : this(port, new log.ConsoleLog()) {}
+            _port = port;            
+        }        
         public AsyncSocketServer() : this(-1) {}
 
         public event EventHandler<EventArgs<ISocketClient>> Connected;
@@ -31,6 +28,7 @@ namespace dotnet_sockets
         public event EventHandler<EventArgs<Exception>> Error;
         public event EventHandler<EventArgs<int>> Sent;
         public event EventHandler<SocketDataArgs> ReceivedData;
+        public event EventHandler<LogEventArgs> Log;
 
         public IEnumerable<ISocketClient> Clients { get { return _clients.ToArray(); } }
 
@@ -43,7 +41,7 @@ namespace dotnet_sockets
                 
 				//IPAddress hostIP = Dns.GetHostEntry(Dns.GetHostName()).AddressList[0];
 				IPEndPoint ep = new IPEndPoint(IPAddress.Any, _port);
-                _log.Debug("AsyncSocketServer: endpoint = {0}", ep);
+                RaiseDebug("AsyncSocketServer: endpoint = {0}", ep);
                 _socket = new Socket(ep.AddressFamily, SocketType.Stream, ProtocolType.Tcp);                                
 				_socket.Bind(ep); 				
 				_socket.Listen(cBackLog);                
@@ -116,7 +114,7 @@ namespace dotnet_sockets
                         var s = (Socket)t.Task.AsyncState;
                         try
                         {
-                            ISocketClient client = new AsyncSocketClient(s.EndAccept(ar), _log);
+                            ISocketClient client = new AsyncSocketClient(s.EndAccept(ar));
                             HandleClient(client);                            
                             _clients.Add(client);                            
                             RaiseConnected(client);
@@ -280,6 +278,37 @@ namespace dotnet_sockets
             if (ReceivedData != null)
                 ReceivedData(this, new SocketDataArgs(client, data, length));
         }
+
+        void RaiseTrace(string msg, params object[] args)
+        {
+            RaiseLog("TRACE", msg, null, args);
+        }
+        void RaiseDebug(string msg, params object[] args)
+        {
+            RaiseLog("DEBUG", msg, null, args);
+        }
+        void RaiseInfo(string msg, params object[] args)
+        {
+            RaiseLog("INFO", msg, null, args);
+        }
+        void RaiseWarn(string msg, params object[] args)
+        {
+            RaiseLog("WARN", msg, null, args);
+        }
+        void RaiseError(string msg, Exception ex, params object[] args)
+        {
+            RaiseLog("ERROR", msg, ex, args);
+        }
+        void RaiseFatal(string msg, params object[] args)
+        {
+            RaiseLog("FATAL", msg, null, args);
+        }
+        void RaiseLog(string level, string msg, Exception ex = null, params object[] args)
+        {
+            if (Log != null)
+                Log(this, new LogEventArgs(level, msg, ex, args));
+        }
+
         #endregion
     }
 }

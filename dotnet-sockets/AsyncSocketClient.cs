@@ -12,25 +12,20 @@ namespace dotnet_sockets
     public class AsyncSocketClient : ISocketClient
     {
         string _address;
-        int _port;
-        ILog _log;
+        int _port;        
         Socket _socket;
         ConcurrentQueue<byte[]> _tosend = new ConcurrentQueue<byte[]>();
 
-        public AsyncSocketClient(Socket socket, ILog log)
+        public AsyncSocketClient(Socket socket)
         {
-            _socket = socket;
-            _log = log;            
-        }
-        public AsyncSocketClient(Socket socket) : this(socket, new log.ConsoleLog()) {}
-        public AsyncSocketClient(string address, int port, ILog log)
+            _socket = socket;            
+        }        
+        public AsyncSocketClient(string address, int port)
         {
             _address = address;
-            _port = port;
-            _log = log;            
-        }
-        public AsyncSocketClient(string address, int port) : this(address, port, new log.ConsoleLog()) {}
-        public AsyncSocketClient() : this(null, -1) {}
+            _port = port;            
+        }        
+        public AsyncSocketClient() : this(null) {}
 
         public event EventHandler<EventArgs<bool>> Connected;
         public event EventHandler<EventArgs<bool>> Reconnected;
@@ -38,6 +33,7 @@ namespace dotnet_sockets
         public event EventHandler<EventArgs<Exception>> Error;
         public event EventHandler<EventArgs<int>> Sent;
         public event EventHandler<SocketDataArgs> ReceivedData;
+        public event EventHandler<LogEventArgs> Log;
 
         public bool IsConnected { get {return _socket != null ? _socket.Connected : false; }}
 
@@ -248,7 +244,7 @@ namespace dotnet_sockets
                             int received = st.socket.EndReceive(ar);
                             if (received > 0)
                             {
-                                _log.Debug("AsyncSocketClient: Received {0}", received);
+                                RaiseDebug("AsyncSocketClient: Received {0}", received);
                                 state.message.AddRange(st.buffer.Take(received).ToList());                                
                             }
                             if (received < ReceiveState.BufferSize)
@@ -257,7 +253,7 @@ namespace dotnet_sockets
                                 t.TrySetResult(data);
                                 if (data.Length > 0)
                                 {
-                                    _log.Debug("AsyncSocketClient: Received message {0}", data.Length);
+                                    RaiseDebug("AsyncSocketClient: Received message {0}", data.Length);
                                     RaiseReceivedData(data, data.Length);
                                 }
                             }                                
@@ -318,6 +314,37 @@ namespace dotnet_sockets
             if (ReceivedData != null)
                 ReceivedData(this, new SocketDataArgs(this, data, length));
         }
+
+        void RaiseTrace(string msg, params object[] args)
+        {
+            RaiseLog("TRACE", msg, null, args);
+        }
+        void RaiseDebug(string msg, params object[] args)
+        {
+            RaiseLog("DEBUG", msg, null, args);
+        }
+        void RaiseInfo(string msg, params object[] args)
+        {
+            RaiseLog("INFO", msg, null, args);
+        }
+        void RaiseWarn(string msg, params object[] args)
+        {
+            RaiseLog("WARN", msg, null, args);
+        }
+        void RaiseError(string msg, Exception ex, params object[] args)
+        {
+            RaiseLog("ERROR", msg, ex, args);
+        }
+        void RaiseFatal(string msg, params object[] args)
+        {
+            RaiseLog("FATAL", msg, null, args);
+        }
+        void RaiseLog(string level, string msg, Exception ex = null, params object[] args)
+        {
+            if (Log != null)
+                Log(this, new LogEventArgs(level, msg, ex, args));
+        }
+
         #endregion
     }
 }

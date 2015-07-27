@@ -41,11 +41,10 @@
   <ItemGroup>
     <Compile Include="AsyncSocketServer.cs" />
     <Compile Include="events\GenericEventArgs.cs" />
+    <Compile Include="events\LogEventArgs.cs" />
     <Compile Include="events\SocketDataArgs.cs" />
-    <Compile Include="interfaces\ILog.cs" />
     <Compile Include="interfaces\ISocketServer.cs" />
     <Compile Include="interfaces\ISocketClient.cs" />
-    <Compile Include="log\ConsoleLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="sockets\SocketExtensions.cs" />
     <Compile Include="sockets\SocketAwaitable.cs" />

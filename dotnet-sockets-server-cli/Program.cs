@@ -12,47 +12,46 @@ namespace dotnet_sockets_server_cli
     {
         const int cDefaultPort = 8888;
         static void Main(string[] args)
-        {
-            ILog log = new dotnet_sockets.log.ConsoleLog();
+        {            
             try
             {
                 int port = args.Length > 0 ? Int32.Parse(args[0]) : cDefaultPort;                
-                log.Info("DOTNET-SOCKETS Server");
-                Run(port, log);
+                Info("DOTNET-SOCKETS Server");
+                Run(port);
             }
             catch (Exception ex)
             {
-                log.Error("DOTNET-SOCKET Server", ex);
+                Error("DOTNET-SOCKET Server", ex);
             }
             finally
             {
-                log.Info("DOTNET-SOCKET Server done");
+                Info("DOTNET-SOCKET Server done");
             }
         }
 
-        static void Run(int port, ILog log)
+        static void Run(int port)
         {
             ISocketServer server = null;
             try
             {
-                server = new AsyncSocketServer(port, log);
+                server = new AsyncSocketServer(port);
                 server.Connected += (sender, client) => {
-                    log.Debug("DOTNET-SOCKET Server: client connected");
+                    Debug("DOTNET-SOCKET Server: client connected");
                 };
                 server.Disconnected += (sender, client) => {
-                    log.Debug("DOTNET-SOCKET Server: client disconnected");
+                    Debug("DOTNET-SOCKET Server: client disconnected");
                 };
                 server.Error += (sender, err) => {
-                    log.Error("DOTNET-SOCKET Server", err);
+                    Error("DOTNET-SOCKET Server", err.Value);
                 };
-                server.Received += (sender, args) => {
+                server.ReceivedData += (sender, args) => {
                     string msg = System.Text.Encoding.UTF8.GetString(args.Data, 0, args.Size);
-                    log.Debug("DOTNET-SOCKET Server: Received [{0}] bytes of data", args.Size);                    
+                    Debug("DOTNET-SOCKET Server: Received [{0}] bytes of data", args.Size);                    
                     // echo to other clients
                     string[] tokens = msg.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (string token in tokens)
                     {
-                        log.Debug("DOTNET-SOCKET Server: {0}", token);
+                        Debug("DOTNET-SOCKET Server: {0}", token);
                         foreach (ISocketClient sc in server.Clients)
                         {
                             if (sc !=  args.Client)
@@ -62,22 +61,44 @@ namespace dotnet_sockets_server_cli
                         }
                     }                        
                 };
+                server.Log += (sender, a) =>
+                {
+                    Log(a.Level, a.Message, a.Exception, a.Args);
+                };
+
                 server.Open().Wait();
                 while (true)
                 {
-                    log.Debug("DOTNET-SOCKET Server: wait for connection");
+                    Debug("DOTNET-SOCKET Server: wait for connection");
                     server.Accept().Wait();                    
                 }                
             }
             catch (Exception ex)
             {
-                log.Error("DOTNET-SOCKET Server", ex);
+                Error("DOTNET-SOCKET Server", ex);
             }
             finally
             {
                 if (server != null)
                     server.Close().Wait();
             }
+        }
+
+        static void Debug(string msg, params object[] args)
+        {
+            Log("DEBUG", msg, null, args);
+        }
+        static void Info(string msg, params object[] args)
+        {
+            Log("INFO", msg, null, args);
+        }
+        static void Error(string msg, Exception ex, params object[] args)
+        {
+            Log("ERROR", msg, ex, args);
+        }
+        static void Log(string level, string msg, Exception ex = null, params object[] args)
+        {
+            Console.Out.WriteLine(String.Format("{0} : {1} : {2}", DateTime.Now, level, msg), args);
         }
     }
 }

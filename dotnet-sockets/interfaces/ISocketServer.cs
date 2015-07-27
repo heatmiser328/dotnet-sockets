@@ -14,6 +14,7 @@ namespace dotnet_sockets
 		event EventHandler<EventArgs<Exception>> Error;
         event EventHandler<EventArgs<int>> Sent;
         event EventHandler<SocketDataArgs> ReceivedData;
+        event EventHandler<LogEventArgs> Log;
 
         IEnumerable<ISocketClient> Clients { get; }
 
