@@ -44,7 +44,9 @@ namespace dotnet_sockets
                 if (_socket != null) return Task<bool>.FromResult(true);
                 if (address != null) _address = address;
                 if (port > 0) _port = port;
-                _address = _address ?? Dns.GetHostEntry(Dns.GetHostName()).AddressList[0].ToString();
+
+                _address = _address ?? "localhost";// IPAddress.Loopback.ToString();//Dns.GetHostEntry(Dns.GetHostName()).AddressList[0].ToString();
+                _address = _address.Equals("localhost", StringComparison.InvariantCultureIgnoreCase) ? IPAddress.Loopback.ToString() : _address;
 
                 IPEndPoint server = new IPEndPoint(IPAddress.Parse(_address), _port);
                 _socket = new Socket(server.AddressFamily, SocketType.Stream, ProtocolType.Tcp);                                
