@@ -161,7 +161,7 @@ namespace dotnet_sockets
         {
             try
             {
-                if (_socket == null)
+                if (_socket == null || !_socket.Connected)
                     return Task<int>.FromResult(0);
                 if (_tosend.IsEmpty)
                     return Task<int>.FromResult(0);
